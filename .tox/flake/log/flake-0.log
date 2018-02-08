@@ -1,9 +1,0 @@
-actionid: flake
-msg: getenv
-cmdargs: ['/usr/bin/python3', '-m', 'virtualenv', '--python', '/usr/bin/python3', 'flake']
-
-Already using interpreter /usr/bin/python3
-Using base prefix '/usr'
-New python executable in /home/bdx/allcode/charms/layers/layer-maas/.tox/flake/bin/python3
-Also creating executable in /home/bdx/allcode/charms/layers/layer-maas/.tox/flake/bin/python
-Installing setuptools, pip, wheel...done.
