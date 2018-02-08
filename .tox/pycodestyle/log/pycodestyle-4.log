@@ -1,0 +1,5 @@
+actionid: pycodestyle
+msg: envreport
+cmdargs: ['/home/bdx/allcode/charms/layers/layer-maas/.tox/pycodestyle/bin/pip', 'freeze']
+
+pycodestyle==2.3.1

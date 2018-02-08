@@ -11,7 +11,7 @@ from charmhelpers.core.hookenv import (
 from charms.reactive import (
     clear_flag,
     endpoint_from_flag,
-    is_flag_set,
+    # is_flag_set,
     set_flag,
     when,
     when_any,
@@ -157,6 +157,7 @@ def create_maas_admin():
 
 @when('leadership.is_leader',
       'maas.mode.region',
+      'maas.mode.region+rack',
       'maas.init.complete')
 @when_not('leadership.set.secret')
 def get_set_secret():
@@ -164,7 +165,6 @@ def get_set_secret():
         charms.leadership.leader_set(secret=f.read())
 
 
-@when('leadership.set.secret')
 @when_not('leadership.is_leader',
           'maas.init.complete')
 @when_any('maas.mode.region',
@@ -205,25 +205,24 @@ def open_web_port():
 
 
 @when('leadership.set.secret',
-      'region.available',
+      'endpoint.region.available',
       'leadership.is_leader')
 def send_relation_data_to_rack():
-    endpoint = endpoint_from_flag('region.available')
+    endpoint = endpoint_from_flag('endpoint.region.available')
     ctxt = {'secret': leader_get('secret'),
             'maas_url': maas_url()}
     endpoint.configure(**ctxt)
-    clear_flag('region.available')
+    # clear_flag('region.available')
 
 
-@when('rack.available',
+@when('endpoint.rack.available',
       'maas.mode.rack')
 @when_not('maas-region.relation.data.available')
 def configure_rack_controller():
     status_set('maintenance',
                'Acquiring configuration details from region controller')
-    endpoint = endpoint_from_flag('rack.available')
-    services = endpoint.services()
-    for service in services:
+    endpoint = endpoint_from_flag('endpoint.rack.available')
+    for service in endpoint.services():
         for host in service['hosts']:
             kv.set('maas_url', host['maas_url'])
             kv.set('secret', host['secret'])
@@ -261,15 +260,15 @@ def block_until_master_relation():
     return
 
 
-@when('http.available')
+@when('endpoint.http.joined')
 @when_any('maas.mode.region',
           'maas.mode.all',
           'maas.mode.region+rack')
 def set_http_relation_data():
-    endpoint = endpoint_from_flag('http.available')
+    endpoint = endpoint_from_flag('endpoint.http.joined')
     ctxt = {'host': PRIVATE_IP, 'port': MAAS_WEB_PORT}
     endpoint.configure(**ctxt)
-    clear_flag('http.available')
+    # clear_flag('http.available')
 
 
 @when('config.changed.maas-url',

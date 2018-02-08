@@ -1,0 +1,14 @@
+actionid: flake
+msg: getenv
+cmdargs: ['/home/bdx/allcode/charms/layers/layer-maas/.tox/flake/bin/pip', 'install', 'flake8']
+
+Collecting flake8
+  Using cached flake8-3.5.0-py2.py3-none-any.whl
+Collecting mccabe<0.7.0,>=0.6.0 (from flake8)
+  Using cached mccabe-0.6.1-py2.py3-none-any.whl
+Collecting pycodestyle<2.4.0,>=2.0.0 (from flake8)
+  Using cached pycodestyle-2.3.1-py2.py3-none-any.whl
+Collecting pyflakes<1.7.0,>=1.5.0 (from flake8)
+  Using cached pyflakes-1.6.0-py2.py3-none-any.whl
+Installing collected packages: mccabe, pycodestyle, pyflakes, flake8
+Successfully installed flake8-3.5.0 mccabe-0.6.1 pycodestyle-2.3.1 pyflakes-1.6.0
