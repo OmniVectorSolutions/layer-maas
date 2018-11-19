@@ -8,7 +8,7 @@ includes:
 options:
   snap:
     maas:
-      channel: stable
+      channel: edge
       devmode: false
       jailmode: false
       dangerous: false

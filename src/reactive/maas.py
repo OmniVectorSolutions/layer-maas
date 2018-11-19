@@ -158,9 +158,9 @@ def create_maas_admin():
 
 
 @when('leadership.is_leader',
-      'maas.mode.region',
-      'maas.mode.region+rack',
       'maas.init.complete')
+@when_any('maas.mode.region',
+          'maas.mode.region+rack')
 @when_not('leadership.set.secret')
 def get_set_secret():
     with open("/var/snap/maas/current/var/lib/maas/secret", 'r') as f:
@@ -209,9 +209,9 @@ def open_web_port():
 
 @when('leadership.set.secret',
       'leadership.is_leader',
-      'maas.mode.region',
-      'maas.mode.region+rack',
       'endpoint.region.available')
+@when_any('maas.mode.region',
+          'maas.mode.region+rack')
 @when_not('region.relation.data.available')
 def send_relation_data_to_rack():
     endpoint = endpoint_from_flag('endpoint.region.available')
@@ -230,11 +230,9 @@ def acquire_config_from_region_controller():
     status_set('maintenance',
                'Acquiring configuration details from region controller')
     endpoint = endpoint_from_flag('endpoint.rack.available')
-    services = endpoint.services()
-    for service in services:
-        for host in service['hosts']:
-            kv.set('maas_url', host['maas_url'])
-            kv.set('secret', host['secret'])
+    for unit in endpoint.list_unit_data():
+        kv.set('maas_url', unit['maas_url'])
+        kv.set('secret', unit['secret'])
     status_set('active', 'Region configuration acquired')
     set_flag('rack.relation.data.available')
 
@@ -262,10 +260,21 @@ def set_connected_status():
     status_set('active', "Region <-> Rack connected")
 
 
+@when('maas.mode.region')
+@when_not('maas.manual.database.available',
+          'maas.juju.database.available')
+def block_until_database_info_set():
+    """Block region-controller has set database info
+    """
+    status_set('blocked',
+               'Need database connection info via config or relation')
+    return
+
+
 @when('maas.mode.rack')
 @when_not('rack.relation.data.available')
-def block_until_master_relation():
-    """Block rack-controllers until relation to region is acquired
+def block_until_region_relation():
+    """Block rack controllers until relation to region is acquired
     """
     status_set('blocked',
                'Need relation to region controller to continue')

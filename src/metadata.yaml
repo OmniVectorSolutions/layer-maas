@@ -7,7 +7,7 @@ tags:
   - maas
   - metal
 series:
-- xenial
+- bionic
 subordinate: false
 requires:
   postgresql:
